@@ -33,44 +33,6 @@ def parse_trade_signal(message):
         print(f"Error parsing signal: {e}")
         return None
 
-# In the place_trade function, convert the risk percentage to float before passing it to calculate_lot_size
-async def on_message(message):
-    # Ignore messages sent by the bot itself
-    if message.author == client.user:
-        return
-
-    # Split the message into lines
-    lines = message.content.strip().split('\n')
-
-    # Parse the trade signal
-    for line in lines:
-        # Debug print for line content
-        print(f"Processing line: {line}")
-
-        # Parse the trade signal
-        trade_signal = parse_trade_signal(line)
-        print(f"Parsed trade signal: {trade_signal}")  # Check parsed output
-
-        if trade_signal:
-            print(f"Received trade signal: {trade_signal}")
-            success = place_trade(
-                order_type=trade_signal['order_type'],
-                order_kind=trade_signal['order_kind'],
-                symbol=trade_signal['symbol'],
-                risk_percentage=float(trade_signal['risk_percentage']),  # Ensure this is a float
-                entry_price=trade_signal['entry_price'],
-                sl=trade_signal['sl'],
-                tp=trade_signal['tp']
-            )
-            if success:
-                print(f"Line content before sending message: {line}")
-                await message.channel.send(f"Trade placed successfully for: {line}")
-            else:
-                print(f"Line content before sending message: {line}")
-                await message.channel.send(f"Failed to place trade for: {line}. Check logs for details.")
-        else:
-            print(f"Invalid signal format received for line: {line}")
-
 def calculate_lot_size(balance, risk_percentage, symbol, entry_price, sl):
     """
     Calculate lot size based on account balance, risk percentage, and symbol details.
